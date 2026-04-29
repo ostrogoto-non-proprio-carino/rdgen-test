@@ -1,6 +1,6 @@
 name: Custom Linux Client Generator
 run-name: Custom Linux Client Generator
-on: 
+on:
   workflow_dispatch:
     inputs:
       version:
@@ -22,7 +22,7 @@ env:
   SCITER_NASM_DEBVERSION: "2.14-1"
   LLVM_VERSION: "15.0.6"
   FLUTTER_VERSION: "3.24.5"
-  ANDROID_FLUTTER_VERSION: "3.24.5" 
+  ANDROID_FLUTTER_VERSION: "3.24.5"
   FLUTTER_RUST_BRIDGE_VERSION: "1.80.1"
   # for arm64 linux because official Dart SDK does not work
   FLUTTER_ELINUX_VERSION: "3.16.9"
@@ -79,7 +79,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - uses: actions/download-artifact@v4
         with:
           name: encrypted-secrets-zip
@@ -116,7 +116,7 @@ jobs:
           if [[ "${{ matrix.job.arch }}" == "x86_64" ]]; then
             sudo apt-get install -y qemu-user-static
           fi
-      
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -254,7 +254,7 @@ jobs:
           sed -i -e 's|Purslane Ltd|${{ env.compname }}|' ./flutter/lib/desktop/pages/desktop_setting_page.dart
           sed -i -e 's|Purslane Ltd|${{ env.compname }}|' ./Cargo.toml
           sed -i -e 's|Purslane Ltd|${{ env.compname }}|' ./libs/portable/Cargo.toml
-          
+
       - name: allow custom.txt
         uses: nick-fields/retry@v3
         with:
@@ -271,12 +271,12 @@ jobs:
             echo -n "${{ env.custom }}" | cat > ./custom_.txt
             # sed -i '/intl:/a \ \ archive: ^3.6.1' ./flutter/pubspec.yaml
             sed -i -e 's|https://admin.rustdesk.com|${{ env.apiServer }}|' ./src/common.rs
-          
+
       - name: change url to custom
         if: env.urlLink != 'https://rustdesk.com'
         continue-on-error: true
         shell: bash
-        run: |  
+        run: |
           sed -i -e 's|Homepage: https://rustdesk.com|Homepage: ${{ env.urlLink }}|' ./build.py
           sed -i -e "s|launchUrl(Uri.parse('https://rustdesk.com'));|launchUrl(Uri.parse('${{ env.urlLink }}'));|" ./flutter/lib/common.dart
           sed -i -e "s|launchUrlString('https://rustdesk.com');|launchUrlString('${{ env.urlLink }}');|" ./flutter/lib/desktop/pages/desktop_setting_page.dart
@@ -333,11 +333,11 @@ jobs:
           command: |
             wget https://raw.githubusercontent.com/bryangerlach/rdgen/refs/heads/master/.github/patches/hidecm.diff
             git apply hidecm.diff
-        
+
       - name: removeNewVersionNotif
         continue-on-error: true
         if: env.removeNewVersionNotif == 'true'
-        run: | 
+        run: |
           sed -i -e 's|updateUrl.isNotEmpty|false|' ./flutter/lib/desktop/pages/desktop_home_page.dart
           sed -i '/let (request, url) =/,/Ok(())/{/Ok(())/!d}' ./src/common.rs
 
@@ -614,7 +614,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - uses: actions/download-artifact@v4
         with:
           name: encrypted-secrets-zip
@@ -671,7 +671,7 @@ jobs:
           shell: bash
           command: |
             curl -i -X POST -H "Content-Type: multipart/form-data" -H "Authorization: Bearer ${{ env.token }}" -F "file=@./appimage/${{ env.filename }}-${{ matrix.job.arch }}.AppImage" -F "uuid=${{ env.uuid }}" ${{ secrets.GENURL }}/save_custom_client
-          
+
       - name: send file to api server
         if: ${{ env.rdgen == 'false' }}
         uses: nick-fields/retry@v3
@@ -709,7 +709,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - uses: actions/download-artifact@v4
         with:
           name: encrypted-secrets-zip
@@ -782,7 +782,7 @@ jobs:
           shell: bash
           command: |
             curl -i -X POST -H "Content-Type: multipart/form-data" -H "Authorization: Bearer ${{ env.token }}" -F "file=@./flatpak/${{ env.filename }}-${{ matrix.job.arch }}.flatpak" -F "uuid=${{ env.uuid }}" ${{ secrets.GENURL }}/save_custom_client
-          
+
       - name: send file to api server
         if: ${{ env.rdgen == 'false' }}
         uses: nick-fields/retry@v3
@@ -800,7 +800,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - uses: actions/download-artifact@v4
         with:
           name: encrypted-secrets-zip
