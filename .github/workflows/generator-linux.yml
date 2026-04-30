@@ -674,6 +674,7 @@ jobs:
         shell: bash
         run: |
           sed -ie "s|rustdesk|${{ env.filename }}|g" appimage/*
+          mv appimage/rustdesk.deb "appimage/${{ env.filename }}.deb"
 
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
           sudo apt-get update -y
