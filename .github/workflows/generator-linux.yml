@@ -431,7 +431,7 @@ jobs:
             echo $JOBS
 
             # Make the right unit stop when the services is stopped by tray
-            sed -ie "s|\(systemctl\s\+\S\+\s\){app_name}|\1${{ inputs.filename }}|g" src/platform/linux.rs
+            sed -ie "s|\(systemctl\s\+\S\+\s\){app_name}|\1${{ env.filename }}|g" src/platform/linux.rs
             sed -ie 's|\({home}/{p}/{app_name0}2\?.toml\)|\\"\1\\"|g' src/platform/linux.rs
             sed -ie 's|\(/root/{p}/\)|\\"\1\\"|g' src/platform/linux.rs
 
@@ -514,15 +514,15 @@ jobs:
             fi
 
             # Change files names in the output .deb
-            sed -ie "s|\(cp .* \)tmpdeb/usr/share/rustdesk/files/systemd/|\1tmpdeb/usr/share/rustdesk/files/systemd/${{ inputs.filename }}.service|g" build.py
-            sed -ie "s|cp -r \(.\+\)\* \([^ ]\+\)/rustdesk|mv \1rustdesk \1${{ inputs.filename }}; cp -r \1\* \2/${{ inputs.filename }}|g" build.py
-            sed -ie "s|\(tmpdeb/[^ ]*\)rustdesk|\1${{ inputs.filename }}|g" build.py
-            sed -ie "s|Package: rustdesk|Package: ${{ inputs.filename }}|g" build.py
-            sed -ie "s|RustDesk|${{ inputs.appname }}|g" res/rustdesk.desktop
+            sed -ie "s|\(cp .* \)tmpdeb/usr/share/rustdesk/files/systemd/|\1tmpdeb/usr/share/rustdesk/files/systemd/${{ env.filename }}.service|g" build.py
+            sed -ie "s|cp -r \(.\+\)\* \([^ ]\+\)/rustdesk|mv \1rustdesk \1${{ env.filename }}; cp -r \1\* \2/${{ env.filename }}|g" build.py
+            sed -ie "s|\(tmpdeb/[^ ]*\)rustdesk|\1${{ env.filename }}|g" build.py
+            sed -ie "s|Package: rustdesk|Package: ${{ env.filename }}|g" build.py
+            sed -ie "s|RustDesk|${{ env.appname }}|g" res/rustdesk.desktop
             FILES=$(sed -ne "s~.*cp\s\(../\)\?\+\(.\+\.\(desktop\|service\)\)\s\+tmpdeb/.*~\2~p" build.py | sort | uniq)
             FILES=$(echo -e "$FILES\n$(ls --color=never res/DEBIAN/*)")
             for FILE in $(echo $FILES | sed "s/\n/ /g"); do
-              sed -ie "s|rustdesk|${{ inputs.filename }}|g" $FILE
+              sed -ie "s|rustdesk|${{ env.filename }}|g" $FILE
             done
 
             python3 ./build.py --flutter --skip-cargo
@@ -673,7 +673,7 @@ jobs:
       - name: Build appimage package
         shell: bash
         run: |
-          sed -ie "s|rustdesk|${{ inputs.filename }}|g" appimage/*
+          sed -ie "s|rustdesk|${{ env.filename }}|g" appimage/*
 
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
           sudo apt-get update -y
