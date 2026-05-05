@@ -671,6 +671,7 @@ jobs:
             b64=""
 
             # mv ./flutter/assets/icon.svg ./flutter/assets/icon.svg.bak
+            apt install -y potrace
             convert ./res/icon.png ./res/scalable.svg
 
       - name: Build appimage package
