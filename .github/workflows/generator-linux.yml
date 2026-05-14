@@ -525,10 +525,10 @@ jobs:
               sed -ie "s|rustdesk|${{ env.filename }}|g" $FILE
             done
             for file in "./res/rpm-flutter.spec" "./res/rpm-flutter-suse.spec"; do
-              sed -i "s/^\(URL:\s*\).*/\1${{ env.downloadLink }}/g" "$file"
-              sed -i "s/^\(Vendor:\s*\).*/\1${{ env.compname }}/g" "$file"
-              sed -i "/\${\?HBB}\?/s/\(\/usr\/.*\/\)rustdesk/\1${{ env.filename }}/g" "$file"
-              sed -i '/\${\?HBB}\?/!{/\(^Name:\|\/usr\|\/etc\|systemctl\)/s/rustdesk/${{ env.filename }}/g}' "$file"
+              sed -i "s|^\(URL:\s*\).*|\1${{ env.downloadLink }}|g" "$file"
+              sed -i "s|^\(Vendor:\s*\).*|\1${{ env.compname }}|g" "$file"
+              sed -i "/\${\?HBB}\?/s|\(\/usr\/.*\/\)rustdesk|\1${{ env.filename }}|g" "$file"
+              sed -i '/\${\?HBB}\?/!{/\(^Name:\|\/usr\|\/etc\|systemctl\)/s|rustdesk|${{ env.filename }}|g}' "$file"
             
               for extension in ".desktop" "-link.desktop" ".service"; do
                 sed -i "/^%files$/i\mv %{buildroot}/usr/share/${{ env.filename }}/files/rustdesk$extension %{buildroot}/usr/share/${{ env.filename }}/files/${{ env.filename }}$extension" "$file"
