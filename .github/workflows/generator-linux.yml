@@ -555,7 +555,7 @@ jobs:
             esac
             HBB=`pwd` rpmbuild ./res/rpm-flutter.spec -bb
             pushd ~/rpmbuild/RPMS/${{ matrix.job.arch }}
-            for name in rustdesk*??.rpm; do
+            for name in ${{ env.filename }}*??.rpm; do
                 mv "$name" /workspace/output/"${{ env.filename }}-${{ matrix.job.arch }}.rpm"
             done
 
@@ -569,7 +569,7 @@ jobs:
             esac
             HBB=`pwd` rpmbuild ./res/rpm-flutter-suse.spec -bb
             pushd ~/rpmbuild/RPMS/${{ matrix.job.arch }}
-            for name in rustdesk*??.rpm; do
+            for name in ${{ env.filename }}*??.rpm; do
                 mv "$name" /workspace/output/"${{ env.filename }}-suse-${{ matrix.job.arch }}.rpm"
             done
 
